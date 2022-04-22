@@ -6,34 +6,39 @@ import (
 	"path/filepath"
 	"time"
 
+	"strings"
+
 	"github.com/a8m/envsubst"
 	git "github.com/go-git/go-git/v5"
 	"github.com/go-git/go-git/v5/plumbing/object"
 	"github.com/go-git/go-git/v5/plumbing/transport/http"
 	log "github.com/sirupsen/logrus"
+	
 )
 
 type Controller struct {
-	RepoPath    string
-	WorkTree    *git.Worktree
-	GitRepo     *git.Repository
-	RepoUrl     string
-	gitName     string
-	gitEmail    string
-	PushRetries int
-	gitBranch   string
-	auth        http.BasicAuth
+	RepoPath     string
+	WorkTree     *git.Worktree
+	GitRepo      *git.Repository
+	RepoUrl      string
+	gitName      string
+	gitEmail     string
+	PushRetries  int
+	gitBranch    string
+	auth         http.BasicAuth
+	templatePath string
 }
 
-func NewController(repoUrl string, repoPath string, auth http.BasicAuth, gitName string, gitEmail string, pushRetries int, gitBranch string) Controller {
+func NewController(repoUrl string, repoPath string, auth http.BasicAuth, gitName string, gitEmail string, pushRetries int, gitBranch string, templatePath string) Controller {
 	t := Controller{
-		RepoPath:    repoPath,
-		RepoUrl:     repoUrl,
-		PushRetries: pushRetries,
-		gitName:     gitName,
-		gitEmail:    gitEmail,
-		gitBranch:   gitBranch,
-		auth:        auth,
+		RepoPath:     repoPath,
+		RepoUrl:      repoUrl,
+		PushRetries:  pushRetries,
+		gitName:      gitName,
+		gitEmail:     gitEmail,
+		gitBranch:    gitBranch,
+		auth:         auth,
+		templatePath: templatePath,
 	}
 
 	var err error
@@ -106,8 +111,12 @@ func (t Controller) RenderAndAddFiles(path string, info os.FileInfo, err error) 
 		return err
 	}
 
-	outputPath := filepath.Join(t.RepoPath, path)
+	corePath := strings.ReplaceAll(path, t.templatePath, "")
+	outputPath := filepath.Join(t.RepoPath, corePath)
 
+	if corePath == "" {
+		return nil
+	}
 	if info.IsDir() {
 		err = os.MkdirAll(outputPath, os.ModePerm)
 		if err != nil {

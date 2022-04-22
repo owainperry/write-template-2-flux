@@ -51,7 +51,7 @@ to quickly create a Cobra application.`,
 			}
 		}
 
-		tt := NewController(url, repoPath, auth, emailName, emailAddress, pushRetries, gitBranch)
+		tt := NewController(url, repoPath, auth, emailName, emailAddress, pushRetries, gitBranch,templatefolder)
 
 		RunIt(tt, templatefolder)
 	},
