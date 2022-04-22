@@ -27,7 +27,7 @@ jobs:
       with:
         # list of Docker images to use as base name for tags
         images: |
-          owainperry/write-template-to-flux
+          owainperry/write-template-2-flux
         # generate Docker tags based on the following events/attributes
         tags: |
           type=semver,pattern={{version}},value=v0.1.${{ github.run_number }}
