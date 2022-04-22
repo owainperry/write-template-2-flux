@@ -135,14 +135,16 @@ func (t Controller) RenderAndAddFiles(path string, info os.FileInfo, err error) 
 	if err != nil {
 		log.Errorf(err.Error())
 	}
-
-	_, err = t.WorkTree.Add(path)
+	log.Infof("Adding file %s",outputPath)
+	err = t.WorkTree.AddGlob(".")
+	if err != nil {
+		log.Errorf(err.Error())
+	}
 
 	status, err := t.WorkTree.Status()
 	if err != nil {
 		log.Errorf(err.Error())
 	}
-
 	log.Info(status)
 	return nil
 }
