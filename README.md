@@ -81,7 +81,7 @@
     echo "$VAR" > $FILE
 
     cd $REPO_PATH
-    git config --global user.email "automation@bitso.com"
+    git config --global user.email "automation@foo.com"
     git config --global user.name "Automation"
     git add $FILE -v
     git commit -m "Added annotation for IAM role"
